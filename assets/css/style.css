@@ -1,0 +1,44 @@
+@media (min-width: 992px)
+.modal-lg
+{
+    width: 900px;
+    height: 900px; /* control height here */
+}
+
+.style {
+  padding-right: 10px;
+  color: #b4bcc8;
+}
+
+.nav.side-menu> li > a {
+  color: #000;
+}
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+    padding: 5px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    border-top: 1px solid #ddd;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    box-sizing: border-box;
+    display: inline-block;
+    min-width: 1.5em;
+    padding: 0;
+    margin-left: 2px;
+    text-align: center;
+    text-decoration: none !important;
+    cursor: pointer;
+    color: #333 !important;
+    border: 1px solid transparent;
+    border-radius: 2px;
+}
+
+.paginate_button:hover{
+  color:#333 !important;
+  border:5px solid red ;
+}
+
+/* @media (max-width: @screen-xs-min) {
+  .modal-xs { width: @modal-sm; }
+} */

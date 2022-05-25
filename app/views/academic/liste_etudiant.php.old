@@ -1,0 +1,159 @@
+<!-- page content -->
+            <div class="right_col" role="main">
+                <div class="">
+                    <div class="page-title">
+                        <div class="title_left">
+                            <h3>Liste des étudiants</h3>
+                        </div>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                    <div class="row">
+
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <div class="clearfix"></div>
+                                </div>
+
+                                <table id="table" class="table table-striped projects responsive-utilities jambo_table">
+                                        <thead>
+                                            <tr>
+
+                                                <th style="width: 10%">ID</th>
+                                                <th>Noms et Prénoms de l'étudiant</th>
+                                                <th>Sexe</th>
+                                                <th>Faculté</th>
+                                                <th style="width: 10%">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                          <tr>
+                                              <th>ID</th>
+                                              <th>Noms et Prénoms</th>
+                                              <th>Sexe</th>
+                                              <th>Faculté</th>
+                                              <th>Action</th>
+                                          </tr>
+                                        </tfoot>
+                                        <tbody>
+
+                                            <?php
+                                              foreach ($list  as $objet) {
+                                                  echo '<tr>';
+                                                  echo '<td>' .  $objet['student_id'] . '</td>';
+                                                  echo '<td>' . $objet['student_nom'] . ', ' . $objet['student_prenom'] .'</td>';
+                                                  if ($objet['sex'] == 0) $sex = 'Masculin';
+                                                  else $sex = 'Féminin';
+                                                  echo '<td>' . $sex . '</td>';
+                                                  echo '<td>' . $objet['etude_envisage'] . '</td>';
+                                            ?>
+                                                  <td><a href="#" onclick="showAjaxModal('<?php echo base_url();?>index.php/academic/popup/<?php echo $objet['student_id']; ?>');" class="btn btn-danger btn-xs" id="voir"><i class="fa fa-eye"></i> Voir </a></td>
+                                            <?php
+                                                  echo '</tr>';
+                                              }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                   <!-- libraries to used for table exportation -->
+                   <script src= "<?php echo base_url(); ?>assets/js/datatables/js/dataTables.buttons.min.js"></script>
+                   <script src="<?php echo base_url(); ?>assets/js/datatables/js/jszip.min.js"></script>
+                   <script src="<?php echo base_url(); ?>assets/js/datatables/js/pdfmake.min.js"></script>
+                   <script src="<?php echo base_url(); ?>assets/js/datatables/js/vfs_fonts.js"></script>
+                   <script src="<?php echo base_url(); ?>assets/js/datatables/js/buttons.html5.min.js"></script>
+                     <script src="<?php echo base_url(); ?>assets/js/datatables/js/buttons.print.min.js"></script>
+
+
+                   <script>
+                    var asInitVals = new Array();
+                       $(document).ready(function() {
+
+                         var oTable = $('#table').dataTable({
+                             "oLanguage": {
+                                 "sSearch": "Rerchercher:"
+                             },
+                             'iDisplayLength': 10,
+
+                             initComplete: function () {
+                                 this.api().columns(3).every( function () {
+                                     var column = this;
+                                     var select = $('<select class="form-control"><option value=""></option></select>')
+                                         .appendTo( $(column.footer()).empty() )
+                                         .on( 'change', function () {
+                                             var val = $.fn.dataTable.util.escapeRegex(
+                                                 $(this).val()
+                                             );
+
+                                             column
+                                                 .search( val ? '^'+val+'$' : '', true, false )
+                                                 .draw();
+                                         } );
+                                     column.data().unique().sort().each( function ( d, j ) {
+                                         select.append( '<option value="'+d+'">'+d+'</option>' )
+                                     } );
+                                 } );
+                             }
+                         });
+                         $("tfoot input").keyup(function () {
+                             /* Filter on the column based on the index of this element's parent <th> */
+                             oTable.fnFilter(this.value, $("tfoot th").index($(this).parent()));
+                         });
+                         $("tfoot input").each(function (i) {
+                             asInitVals[i] = this.value;
+                         });
+                         $("tfoot input").focus(function () {
+                             if (this.className == "search_init") {
+                                 this.className = "";
+                                 this.value = "";
+                             }
+                         });
+                         $("tfoot input").blur(function (i) {
+                             if (this.value == "") {
+                                 this.className = "search_init";
+                                 this.value = asInitVals[$("tfoot input").index(this)];
+                             }
+                         });
+                     } );
+
+                     function showAjaxModal(url)
+                     {
+                       $('#modal_ajax').modal('show', {backdrop: 'false'});
+
+                       $.ajax({
+                         url: url,
+                         success: function(response)
+                         {
+                           $('#modal_ajax .modal-body').html(response);
+                         }
+                       });
+                     }
+                   </script>
+
+                   <!-- (Ajax Modal)-->
+                   <div class="modal fade modal fade bs-example-modal-lg" tabindex="-1" role="dialog" id="modal_ajax">
+                     <div class="modal-dialog modal-lg">
+                         <div class="modal-content">
+
+                             <div class="modal-header">
+                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                 <h4 class="modal-title">Détail sur l'étudiant</h4>
+                             </div>
+
+                             <div class="modal-body" style="height:400px; overflow:auto;">
+
+
+
+                             </div>
+
+                             <div class="modal-footer">
+                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                             </div>
+                         </div>
+                     </div>
+                   </div>
